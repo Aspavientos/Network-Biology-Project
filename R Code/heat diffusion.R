@@ -5,14 +5,13 @@
 
 # Loading ----
 ## Load libraries ----
-require(regnet)
 require(RCy3)
 require(igraph)
 require(clusterProfiler)
 require(org.Hs.eg.db)
 require(R.utils)
-require(expm)
 require(tidyverse)
+require(sccore)
 
 ## Load files ----
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
@@ -33,7 +32,13 @@ data <- read.table(gzfile("./PPI Network/9606.protein.links.v12.0.txt"), sep=" "
 graph <- graph_from_data_frame(data)
 
 # Calculate heat diffusion ----
-seed_prots = read.csv('./PPI Network/STRING network - endometriosis IDs.csv', header = FALSE, stringsAsFactors = FALSE)
+seed_prot = read.csv('./PPI Network/STRING network - endometriosis IDs.csv', header = FALSE, stringsAsFactors = FALSE)
+
+seed_vec = seed_prot[,1]
+names(seed_vec) = seed_vec
+
+## sccore method ----
+sccore_prop = propagate_labels(E(graph), rep(1, times = 13714404), seed_vec)
 
 ## Manually ----
 # h
